@@ -34,15 +34,22 @@ exports.getUserTrash = async (req, res) => {
       //     as: 'role',
       //     attributes: ['name']
       //   }
-      include: { 
-        model: User, 
-        attributes: ['id', 'name', 'email'],
-        include: {
-          model: Role,
-          as: 'role',
-          attributes: ['name']
-        }
-      },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'email'],
+          include: {
+            model: Role,
+            as: 'role',
+            attributes: ['name']
+          }
+        },
+        {
+          model: TrashType,
+          as: 'type',
+          attributes: ['id', 'name', 'pricePerKg']
+        },
+      ],
       order: [['createdAt', 'DESC']]
     });
     res.json(data);
@@ -69,16 +76,53 @@ exports.getUserBalance = async (req, res) => {
   }
 };
 
+// exports.getUserHistory = async (req, res) => {
+//   try {
+//     const data = await Trash.findAll({
+//       where: { userId: req.user.id },
+//       include: [
+//         {
+//           model: TrashType,
+//           as: 'type',
+//           attributes: ['id', 'name', 'pricePerKg']
+//         },
+//       ],
+//       order: [['createdAt', 'DESC']]
+//     });
+
+//     res.json({ history: data });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Gagal ambil histori', error });
+//   }
+// };
+
 exports.getUserHistory = async (req, res) => {
   try {
-    const data = await Trash.findAll({
+    const data = await Transaction.findAll({
       where: { userId: req.user.id },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'email']
+        },
+        {
+          model: Trash,
+          attributes: ['status', 'berat'],
+          include: [
+            {
+              model: TrashType,
+              as: 'type',
+              attributes: ['id', 'name']
+            },
+          ]
+        }
+      ],
       order: [['createdAt', 'DESC']]
     });
 
-    res.json({ history: data });
+    res.json({ data });
   } catch (error) {
-    res.status(500).json({ message: 'Gagal ambil histori', error });
+    res.status(500).json({ message: 'Gagal ambil data', error });
   }
 };
 

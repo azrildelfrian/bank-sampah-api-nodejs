@@ -13,7 +13,7 @@ router.patch('/verif/:id', authMiddleware, authorizeRoles('admin'), adminControl
 router.get('/transaction/all', authMiddleware, authorizeRoles('admin'), adminController.getAllTransactions);
 router.get('/user/all', authMiddleware, authorizeRoles('admin'), adminController.getAllUsers);
 router.get('/role/all', authMiddleware, authorizeRoles('admin'), adminController.getAllRoles);
-router.get('/trashtype/all', authMiddleware, authorizeRoles('admin'), adminController.getAllTrashTypes);
+router.get('/trashtype/all', authMiddleware, adminController.getAllTrashTypes);
 router.post('/trashtype/create', authMiddleware, authorizeRoles('admin'), adminController.createTrashType);
 router.patch('/trashtype/edit/:id', authMiddleware, authorizeRoles('admin'), adminController.updateTrashType);
 
